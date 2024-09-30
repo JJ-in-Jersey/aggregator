@@ -6,7 +6,7 @@ from functools import reduce
 
 import pandas as pd
 
-if __name__ == '__main__':
+if __name__ == '__main__':  #
 
     ap = argParser()
     ap.add_argument('filepath', type=str, help='path to arcs files')
@@ -17,5 +17,5 @@ if __name__ == '__main__':
     files = [file for file in os.listdir(Path(args['filepath'])) if args['year'] in file]
     paths = [path.joinpath(file).joinpath('Transit Times').joinpath(file.split('_')[0] + '_transit_times.csv') for file in files]
     frames = [read_df(path) for path in paths if print_file_exists(path)]
-    aggregate_frame = reduce(lambda left, right: pd.merge(left, right, on=['date', 'speed']), frames)
+    aggregate_frame = reduce(lambda left, right: pd.merge(left, right, on=['idx', 'date', 'speed']), frames)
     write_df(aggregate_frame, path.joinpath('aggregate.csv'))
