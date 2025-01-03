@@ -16,13 +16,14 @@ def add_empty_third_idx(frame: pd.DataFrame):
     return frame
 
 def add_column_prefix(frame: pd.DataFrame, code: str):
+    frame.rename(columns={'start_round': 'start', 'min_round': 'best', 'end_round': 'end'})
     columns = frame.columns.to_list()
     columns.remove('idx')
     columns.remove('date')
     columns.remove('speed')
-    return frame.rename(columns={c: code + ' ' + c for c in columns})
+    frame.rename(columns={c: code + ' ' + c for c in columns})
+    return frame[['idx', 'date', 'speed', 'start_round', 'min_round', 'end_round']]
 
-    pass
 
 if __name__ == '__main__':  #
 
