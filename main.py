@@ -40,5 +40,5 @@ if __name__ == '__main__':  #
     frames = [add_column_prefix(frames[i], codes[i]) for i in range(len(frames))]
     frames = [add_empty_third_idx(f) for f in frames]
     aggregate_frame = reduce(lambda left, right: pd.merge(left, right, on=['idx', 'date', 'speed']), frames)
-    aggregate_frame.sort_values(by=['speed', 'date', 'idx']).reset_index(inplace=True)
+    aggregate_frame.sort_values(by=['date', 'speed', 'idx']).reset_index(inplace=True)
     write_df(aggregate_frame, path.joinpath('aggregate.csv'))
