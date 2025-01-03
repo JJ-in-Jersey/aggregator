@@ -16,13 +16,14 @@ def add_empty_third_idx(frame: pd.DataFrame):
     return frame
 
 def add_column_prefix(frame: pd.DataFrame, code: str):
-    frame.rename(columns={'start_round': 'start', 'min_round': 'best', 'end_round': 'end'})
+    frame.rename(columns={'start_round': 'start', 'min_round': 'best', 'end_round': 'end'}, inplace=True)
+    frame = frame[['idx', 'date', 'speed', 'start', 'best', 'end']]
     columns = frame.columns.to_list()
     columns.remove('idx')
     columns.remove('date')
     columns.remove('speed')
-    frame.rename(columns={c: code + ' ' + c for c in columns})
-    return frame[['idx', 'date', 'speed', 'start_round', 'min_round', 'end_round']]
+    frame.rename(columns={c: code + ' ' + c for c in columns}, inplace=True)
+    return frame
 
 
 if __name__ == '__main__':  #
@@ -35,7 +36,8 @@ if __name__ == '__main__':  #
     path = Path(args['filepath'])
     paths = [Path(os.path.join(p, f)) for p, _, fs in os.walk(Path(args['filepath'])) for f in fs if tt in f]
     codes = [p.stem.split()[-1] for p in paths]
-    frames = [add_empty_third_idx(read_df(p)) for p in paths if print_file_exists(p)]
+    frames = [read_df(p) for p in paths if print_file_exists(p)]
     frames = [add_column_prefix(frames[i], codes[i]) for i in range(len(frames))]
+    frames = [add_empty_third_idx(f) for f in frames]
     aggregate_frame = reduce(lambda left, right: pd.merge(left, right, on=['idx', 'date', 'speed']), frames)
     write_df(aggregate_frame, path.joinpath('aggregate.csv'))
