@@ -12,7 +12,7 @@ def add_empty_third_idx(frame: pd.DataFrame):
         insert_row_after.append(len(frame) - 1)
     for row_num in insert_row_after:
         frame.loc[len(frame)] = {'idx': 3, 'date': frame.iloc[row_num]['date'], 'speed': frame.iloc[row_num]['speed']}
-    frame.sort_values(by=['date', 'speed', 'idx']).reset_index(inplace=True)
+    frame.sort_values(by=['speed', 'date', 'idx']).reset_index(inplace=True)
     return frame
 
 def add_column_prefix(frame: pd.DataFrame, code: str):
