@@ -40,7 +40,7 @@ if __name__ == '__main__':  #
         f['date'] = pd.to_datetime(f['date'])
     frames = [add_column_prefix(frames[i], codes[i]) for i in range(len(frames))]
     frames = [add_empty_third_idx(f) for f in frames]
-    aggregate_frame = reduce(lambda left, right: pd.merge(left, right, on=['date', 'speed', 'idx']), frames)
-    aggregate_frame.sort_values(by=['date', 'speed', 'idx'], inplace=True)
+    aggregate_frame = reduce(lambda left, right: pd.merge(left, right, on=['speed', 'date', 'idx']), frames)
+    aggregate_frame.sort_values(by=['speed', 'date', 'idx'], inplace=True)
     aggregate_frame.reset_index(drop=True, inplace=True)
     write_df(aggregate_frame, path.joinpath('aggregate.csv'))
