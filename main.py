@@ -34,8 +34,7 @@ if __name__ == '__main__':  #
     path = Path(args['filepath'])
     paths = [Path(os.path.join(p, f)) for p, _, fs in os.walk(Path(args['filepath'])) for f in fs if tt in f]
     codes = [p.stem.split()[-1] for p in paths]
-    frames = [read_df(p) for p in paths if print_file_exists(p)]
-    frames = [add_column_prefix(frames[i], codes[i]) for i in range(len(frames))]
     frames = [add_empty_third_idx(read_df(p)) for p in paths if print_file_exists(p)]
+    frames = [add_column_prefix(frames[i], codes[i]) for i in range(len(frames))]
     aggregate_frame = reduce(lambda left, right: pd.merge(left, right, on=['idx', 'date', 'speed']), frames)
     write_df(aggregate_frame, path.joinpath('aggregate.csv'))
