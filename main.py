@@ -12,7 +12,6 @@ def add_empty_third_idx(frame: pd.DataFrame):
         insert_row_after.append(len(frame) - 1)
     for row_num in insert_row_after:
         frame.loc[len(frame)] = {'idx': 3, 'date': frame.iloc[row_num]['date'], 'speed': frame.iloc[row_num]['speed']}
-    frame.sort_values(by=['speed', 'date', 'idx']).reset_index(inplace=True)
     return frame
 
 def add_column_prefix(frame: pd.DataFrame, code: str):
@@ -37,8 +36,11 @@ if __name__ == '__main__':  #
     paths = [Path(os.path.join(p, f)) for p, _, fs in os.walk(Path(args['filepath'])) for f in fs if tt in f]
     codes = [p.stem.split()[-1] for p in paths]
     frames = [read_df(p) for p in paths if print_file_exists(p)]
+    for f in frames:
+        f['date'] = pd.to_datetime(f['date'])
     frames = [add_column_prefix(frames[i], codes[i]) for i in range(len(frames))]
     frames = [add_empty_third_idx(f) for f in frames]
-    aggregate_frame = reduce(lambda left, right: pd.merge(left, right, on=['idx', 'date', 'speed']), frames)
-    aggregate_frame.sort_values(by=['date', 'speed', 'idx']).reset_index(inplace=True)
+    aggregate_frame = reduce(lambda left, right: pd.merge(left, right, on=['date', 'speed', 'idx']), frames)
+    aggregate_frame.sort_values(by=['date', 'speed', 'idx'], inplace=True)
+    aggregate_frame.reset_index(drop=True, inplace=True)
     write_df(aggregate_frame, path.joinpath('aggregate.csv'))
