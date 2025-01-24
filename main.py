@@ -12,15 +12,16 @@ if __name__ == '__main__':  #
     ap.add_argument('filepath', type=str, help='path to arcs files')
     args = vars(ap.parse_args())
 
-    paths = [Path(os.path.join(p, f)) for p, _, fs in os.walk(args['filepath']) for f in fs if 'transit times' in f]
+    paths = [Path(os.path.join(r, f)) for (r, d, fs) in os.walk(args['filepath']) for f in fs if 'transit times' in f]
     codes = sorted([p.stem.split()[-1] for p in paths])
     frames = []
     for path in sorted(paths, key=lambda p: p.stem.split()[-1]):
         code = path.stem.split()[-1]
         frame = read_df(path)
-        frame['date'] = pd.to_datetime(frame['date'])
-        frame = frame[['idx', 'date', 'speed', 'start_round', 'min_round', 'end_round']]
-        frame = frame.rename(columns={'start_round': code + ' start', 'min_round': code + ' best', 'end_round': code + ' end'})
+        frame.date = pd.to_datetime(frame.date)
+        # frame.sort_values(by=['date'], inplace=True)
+        frame = frame[['idx', 'date', 'speed', 'str_start_round', 'str_min_round', 'str_end_round']]
+        frame = frame.rename(columns={'str_start_round': code + ' start', 'str_min_round': code + ' best', 'str_end_round': code + ' end'})
         frames.append(frame)
 
     aggregate_frame = pd.DataFrame()
