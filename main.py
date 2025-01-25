@@ -19,7 +19,6 @@ if __name__ == '__main__':  #
         code = path.stem.split()[-1]
         frame = read_df(path)
         frame.date = pd.to_datetime(frame.date)
-        # frame.sort_values(by=['date'], inplace=True)
         frame = frame[['idx', 'date', 'speed', 'str_start_round', 'str_min_round', 'str_end_round']]
         frame = frame.rename(columns={'str_start_round': code + ' start', 'str_min_round': code + ' best', 'str_end_round': code + ' end'})
         frames.append(frame)
