@@ -19,6 +19,7 @@ if __name__ == '__main__':  #
         code = path.stem.split()[-1]
         frame = read_df(path)
         frame.date = pd.to_datetime(frame.date)
+        frame.date = frame.date.apply(lambda d: d.strftime('%m/%d/%Y'))
         frame = frame[['idx', 'date', 'speed', 'str_start_round', 'str_min_round', 'str_end_round']]
         frame = frame.rename(columns={'str_start_round': code + ' start', 'str_min_round': code + ' best', 'str_end_round': code + ' end'})
         frames.append(frame)
@@ -31,4 +32,4 @@ if __name__ == '__main__':  #
             if not col in a_cols:
                 aggregate_frame[col] = f[col]
 
-    write_df(aggregate_frame, Path(args['filepath']).joinpath('aggregate.csv'))
+    write_df(aggregate_frame, Path(args['filepath']).joinpath('arc data.csv'))
